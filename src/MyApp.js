@@ -1,60 +1,105 @@
-import React, {useState, useEffect} from 'react';
+import React, { Component } from 'react'
+import Table from './Table'
+import Form from './Form'
 import axios from 'axios';
-import Table from './Table';
-import Form from './Form';
 
-function MyApp() {
-  const [characters, setCharacters] = useState([]);  
+class MyApp extends Component {
+  state = {
+    //characters: []
+     characters: [
+       {
+         name: 'Charlie',
+         job: 'Janitor',
+       },
+       {
+         name: 'Mac',
+         job: 'Bouncer',
+       },
+       {
+         name: 'Dee',
+         job: 'Aspring actress',
+       },
+       {
+         name: 'Dennis',
+         job: 'Bartender',
+       },
+     ]
+  	};
+  
+    makePostCall(character){
+      var newid = Math.random().toString(36).substr(2,6)
+      character.id = newid
+      return axios.post('http://localhost:5000/users', character)
+       .then(function (response) {
+         console.log(response);
+         if(response.status === 201){
+           return response.data;
+         }
+       })
+       .catch(function (error) {
+         console.log(error);
+         return false;
+       });
+    }
 
-async function fetchAll(){
-   try {
-      const response = await axios.get('http://localhost:5000/users');
-      return response.data.users_list;     
-   }
-   catch (error){
-      //We're not handling errors. Just logging into the console.
-      console.log(error); 
-      return false;         
-   }
-}
-
-async function makePostCall(person){
-   try {
-      const response = await axios.post('http://localhost:5000/users', person);
-      return response;
-   }
-   catch (error) {
+    handleSubmit = character => {
+      this.makePostCall(character).then( callResult => {
+         if (callResult !== false) {
+            this.setState({ characters: [...this.state.characters, callResult]});
+            
+         }
+      });
+    }
+   
+    
+  componentDidMount() {
+   axios.get('http://localhost:5000/users')
+    .then(res => {
+      const characters = res.data.users_list;
+      this.setState({ characters });
+    })
+    .catch(function (error) {
+      //Not handling the error. Just logging into the console.
       console.log(error);
-      return false;
-   }
-}
-
-function removeOneCharacter (index) {
-  const updated = characters.filter((character, i) => {
-      return i !== index
     });
-    setCharacters(updated);
 }
-function updateList(person) { 
-   makePostCall(person).then( result => {
-   if (result)
-      setCharacters([...characters, person] );
-   });
+  makeDeleteCall(character){
+      return axios.delete('http://localhost:5000/users', {params: {id: character.id}})
+       .then(function (response) {
+         console.log(response);
+         if(response.status === 200){
+           return true;
+         }
+       })
+       .catch(function (error) {
+         console.log(error);
+         return false;
+       });
+    }
+  removeCharacter = index => {
+    const { characters } = this.state
+    this.makeDeleteCall(characters[index]).then(deleteResult =>{
+      if(deleteResult === true){
+      this.setState({
+        characters: characters.filter((character, i) => {
+          return i !== index
+        }),
+      })
+    }
+  });
+  
+    
 }
-useEffect(() => {
-   fetchAll().then( result => {
-      if (result)
-         setCharacters(result);
-    });
-}, [] );
-
-return (
-  <div className="container">
-    <Table characterData={characters} removeCharacter={removeOneCharacter} />
-    <Form handleSubmit={updateList} />
-  </div>
-)
+  render() {
+	  const { characters } = this.state;
+	
+	  return (
+		  <div className="container">
+			  <Table characterData={characters} removeCharacter={this.removeCharacter} />
+        <Form handleSubmit={this.handleSubmit} />
+      </div>
+	  );
+  }
 }
-export default MyApp;
 
-
+export default MyApp
