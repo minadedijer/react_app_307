@@ -59,7 +59,6 @@ class MyApp extends Component {
       this.setState({ characters });
     })
     .catch(function (error) {
-      //Not handling the error. Just logging into the console.
       console.log(error);
     });
 }
