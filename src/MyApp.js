@@ -7,22 +7,37 @@ class MyApp extends Component {
   state = {
     //characters: []
      characters: [
-       {
-         name: 'Charlie',
-         job: 'Janitor',
-       },
-       {
-         name: 'Mac',
-         job: 'Bouncer',
-       },
-       {
-         name: 'Dee',
-         job: 'Aspring actress',
-       },
-       {
-         name: 'Dennis',
-         job: 'Bartender',
-       },
+      { 
+         'id' : 'xyz789',
+         'name' : 'Charlie',
+         'job': 'Janitor',
+      },
+      {
+         'id' : 'abc123', 
+         'name': 'Mac',
+         'job': 'Bouncer',
+      },
+      {
+         'id' : 'ppp222', 
+         'name': 'Mac',
+         'job': 'Professor',
+      }, 
+      {
+         'id' : 'yat999', 
+         'name': 'Dee',
+         'job': 'Aspring actress',
+      },
+      {
+         'id' : 'bjk123',
+         'name': 'Susie',
+         'job': 'Doctor',
+      },
+      {
+         'id' : 'zap555', 
+         'name': 'Dennis',
+         'job': 'Bartender',
+      }
+
      ]
   	};
   
